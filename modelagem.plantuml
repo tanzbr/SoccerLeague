@@ -1,0 +1,96 @@
+﻿@startuml
+title Modelo de Classes - Liga Tabajara de Futebol
+
+enum PosicaoJogador {
+  GOLEIRO
+  ZAGUEIRO
+  VOLANTE
+  MEIA
+  ATACANTE
+  ' Acrescente outras posições que desejar
+}
+
+enum PePreferido {
+  ESQUERDO
+  DIREITO
+  AMBIDESTRO
+}
+
+enum CargoComissao {
+  TREINADOR
+  AUXILIAR
+  PREPARADOR_FISICO
+  FISIOLOGISTA
+  TREINADOR_DE_GOLEIROS
+  FISIOTERAPEUTA
+}
+
+class Time {
+  +int Id
+  +string Nome
+  +string Cidade
+  +string Estado
+  +int AnoFundacao
+  +string Estadio
+  +int CapacidadeEstadio
+  +string CorUniformePrimaria
+  +string CorUniformeSecundaria
+  +bool Status
+}
+
+class Jogador {
+  +int Id
+  +string Nome
+  +DateTime DataNascimento
+  +string Nacionalidade
+  +PosicaoJogador Posicao
+  +int NumeroCamisa
+  +float Altura
+  +float Peso
+  +PePreferido PePreferido
+}
+
+class ComissaoTecnica {
+  +int Id
+  +string Nome
+  +CargoComissao Cargo
+  +DateTime DataNascimento
+}
+
+class Partida {
+  +int Id
+  +DateTime DataPartida
+  +int GolsTimeCasa
+  +int GolsTimeFora
+}
+
+class EstatisticaPartida {
+  +int Id
+  +int GolsJogador
+}
+
+
+class Tabela {
+  +int Id
+  +int Pontos
+  +int Vitorias
+  +int Empates
+  +int Derrotas
+  +int GolsPro
+  +int GolsContra
+  +int SaldoGols
+}
+
+Time "1" -- "0..*" Jogador : possui >
+
+Time "1" -- "0..*" ComissaoTecnica : possui >
+
+Partida "1" -- "1" Time : TimeCasa
+Partida "1" -- "1" Time : TimeFora
+
+EstatisticaPartida "1" -- "1" Jogador : refere >
+EstatisticaPartida "1" -- "1" Partida : refere >
+
+Tabela "1" -- "1" Time : registra desempenho >
+
+@enduml
