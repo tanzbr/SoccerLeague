@@ -127,7 +127,13 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Controllers\ComissaoTecnicaController.cs" />
+    <Compile Include="Controllers\EstatisticasPartidasController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\JogadoresController.cs" />
+    <Compile Include="Controllers\PartidasController.cs" />
+    <Compile Include="Controllers\TabelasController.cs" />
+    <Compile Include="Controllers\TimesController.cs" />
     <Compile Include="Data\SoccerDbContext.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -200,6 +206,12 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\ComissaoTecnica\" />
+    <Folder Include="Views\EstatisticasPartidas\" />
+    <Folder Include="Views\Jogadores\" />
+    <Folder Include="Views\Partidas\" />
+    <Folder Include="Views\Tabelas\" />
+    <Folder Include="Views\Times\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.rtl.min.css.map" />
