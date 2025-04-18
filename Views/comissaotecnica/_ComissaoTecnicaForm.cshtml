@@ -1,0 +1,25 @@
+@model SoccerLeague.Models.ComissaoTecnica
+
+<div class="form-group">
+    @Html.LabelFor(m => m.Nome)
+    @Html.TextBoxFor(m => m.Nome, new { @class = "form-control", placeholder = "Nome do Membro" })
+    @Html.ValidationMessageFor(m => m.Nome)
+</div>
+
+<div class="form-group">
+    @Html.LabelFor(m => m.DataNascimento)
+    @Html.TextBoxFor(m => m.DataNascimento, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
+    @Html.ValidationMessageFor(m => m.DataNascimento)
+</div>
+
+<div class="form-group">
+    @Html.LabelFor(m => m.Cargo)
+    @Html.DropDownListFor(m => m.Cargo, new SelectList(Enum.GetValues(typeof(SoccerLeague.Models.CargoComissao))), "Selecione", new { @class = "form-control" })
+    @Html.ValidationMessageFor(m => m.Cargo)
+</div>
+
+<div class="form-group">
+    @Html.LabelFor(m => m.TimeId)
+    @Html.DropDownListFor(m => m.TimeId, (SelectList)ViewBag.TimeId, "Selecione", new { @class = "form-control" })
+    @Html.ValidationMessageFor(m => m.TimeId)
+</div>

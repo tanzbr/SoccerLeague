@@ -1,41 +1,44 @@
 ﻿@{
-    Layout = null;  // Indica que esse é o layout principal, não usa outro layout
+    Layout = null;  
     var title = ViewBag.Title ?? "Liga Tabajara de Futebol";
 }
 
 <!DOCTYPE html>
-<html>
+<html lang="pt-BR">
 <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@title</title>
-    <!-- Supondo uso de Bootstrap ou CSS próprio -->
-    <link href="~/Content/Site.css" rel="stylesheet" />
+
+    <link href="~/Content/Site.css" rel="stylesheet" type="text/css" />
+
     @RenderSection("ScriptsHead", required: false)
 </head>
 <body>
-    <header>
-        <h1>Liga Tabajara de Futebol</h1>
-        <nav>
-            <ul>
-                <li>@Html.ActionLink("Home", "Index", "Home")</li>
+    <header class="header">
+        <div class="banner">
+            <h1>Liga Tabajara de Futebol</h1>
+        </div>
+        <nav class="navbar">
+            <ul class="nav-menu">
+                <li>@Html.ActionLink("Início", "Index", "Home")</li>
+                <li>@Html.ActionLink("Artilharia", "Index", "Artilharia")</li>
                 <li>@Html.ActionLink("Times", "Index", "Times")</li>
                 <li>@Html.ActionLink("Jogadores", "Index", "Jogadores")</li>
                 <li>@Html.ActionLink("Comissão", "Index", "ComissaoTecnica")</li>
                 <li>@Html.ActionLink("Partidas", "Index", "Partidas")</li>
-                <li>@Html.ActionLink("Tabela", "Index", "Tabelas")</li>
             </ul>
         </nav>
     </header>
 
-    <div class="container">
+    <main class="main-container">
         @RenderBody()
-    </div>
+    </main>
 
-    <footer>
-        <p>&copy; @DateTime.Now.Year - Liga Tabajara</p>
+    <footer class="footer">
+        <p>&copy; @DateTime.Now.Year - Liga Tabajara de Futebol</p>
     </footer>
 
-    <!-- Scripts -->
     @RenderSection("Scripts", required: false)
 </body>
 </html>

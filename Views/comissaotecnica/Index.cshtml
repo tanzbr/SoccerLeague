@@ -1,0 +1,67 @@
+@model IEnumerable<SoccerLeague.Models.ComissaoTecnica>
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Gerenciamento de Comissão Técnica";
+
+    var cargos = Enum.GetValues(typeof(SoccerLeague.Models.CargoComissao))
+                     .Cast<SoccerLeague.Models.CargoComissao>();
+}
+
+<h2>Gerenciamento de Comissão Técnica</h2>
+
+@using (Html.BeginForm("Index", "ComissaoTecnica", FormMethod.Get))
+{
+    <div class="form-inline" style="margin-bottom:15px;">
+        <div class="form-group" style="margin-right:10px;">
+            @Html.Label("Nome:", htmlAttributes: new { @class = "control-label" })
+            @Html.TextBox("nome", Request["nome"] as string, new { @class = "form-control", placeholder = "Nome do membro" })
+        </div>
+        <div class="form-group" style="margin-right:10px;">
+            @Html.Label("Cargo:", htmlAttributes: new { @class = "control-label" })
+            @Html.DropDownList("cargo", new SelectList(cargos), "Selecione", new { @class = "form-control" })
+        </div>
+        <button type="submit" class="btn btn-primary">Pesquisar</button>
+    </div>
+}
+
+<p>
+    @Html.ActionLink("Cadastrar Novo Membro", "Create", null, new { @class = "btn btn-success" })
+</p>
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Nome</th>
+            <th>Cargo</th>
+            <th>Data de Nascimento</th>
+            <th>Time</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.Any())
+        {
+            foreach (var membro in Model)
+            {
+                <tr>
+                    <td>@membro.Nome</td>
+                    <td>@membro.Cargo</td>
+                    <td>@membro.DataNascimento.ToShortDateString()</td>
+                    <td>@(membro.Time != null ? membro.Time.Nome : "Não vinculado")</td>
+                    <td>
+                        @Html.ActionLink("Detalhes", "Details", new { id = membro.ComissaoTecnicaId }, new { @class = "btn btn-info btn-sm" })
+                        @Html.ActionLink("Editar", "Edit", new { id = membro.ComissaoTecnicaId }, new { @class = "btn btn-warning btn-sm" })
+                        @Html.ActionLink("Excluir", "Delete", new { id = membro.ComissaoTecnicaId }, new { @class = "btn btn-danger btn-sm" })
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="5">Nenhum membro encontrado.</td>
+            </tr>
+        }
+    </tbody>
+</table>

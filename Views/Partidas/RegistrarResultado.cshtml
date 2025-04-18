@@ -1,0 +1,122 @@
+﻿@model SoccerLeague.ViewModels.RegistrarResultadoViewModel
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Registrar Resultado da Partida";
+}
+
+<h2 style="margin-bottom: 15px">Registrar Resultado da Partida</h2>
+<div style="text-align:center; margin-bottom:15px;">
+    <h3>@Model.Partida.TimeCasa.Nome vs. @Model.Partida.TimeFora.Nome</h3>
+    <p>Data: @Model.Partida.DataPartida.ToString("dd/MM/yyyy")</p>
+</div>
+
+<form action="@Url.Action("RegistrarResultado","Partidas")" method="post">
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.Partida.PartidaId)
+
+    <input type="hidden" id="GolsTimeCasa" name="Partida.GolsTimeCasa" value="@Model.Partida.GolsTimeCasa" />
+    <input type="hidden" id="GolsTimeFora" name="Partida.GolsTimeFora" value="@Model.Partida.GolsTimeFora" />
+
+    <div class="row-goals" style="display:flex; gap:20px; margin-bottom:20px;">
+        <!-- Time Casa -->
+        <div class="goal-column" style="flex:1;">
+            <div class="goal-card" style="padding:15px; border:1px solid #ccc; border-radius:6px;">
+                <h4>@Model.Partida.TimeCasa.Nome</h4>
+                <div id="casa-goals"></div>
+                <button id="addCasaGoalBtn" type="button" class="btn btn-outline-primary btn-sm" style="margin-top:10px;">
+                    Adicionar Gol
+                </button>
+            </div>
+        </div>
+        <!-- Time Fora -->
+        <div class="goal-column" style="flex:1;">
+            <div class="goal-card" style="padding:15px; border:1px solid #ccc; border-radius:6px;">
+                <h4>@Model.Partida.TimeFora.Nome</h4>
+                <div id="fora-goals"></div>
+                <button id="addForaGoalBtn" type="button" class="btn btn-outline-primary btn-sm" style="margin-top:10px;">
+                    Adicionar Gol
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group" style="text-align:center;">
+        <button type="submit" class="btn btn-success" style="margin-right:10px;">Salvar Resultado</button>
+        <a href="@Url.Action("Index","Partidas")" class="btn btn-secondary">Cancelar</a>
+    </div>
+</form>
+
+@section Scripts {
+    <script>
+        const casaPlayers = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(
+            Model.JogadoresCasa.Select(j => new { j.JogadorId, j.Nome })
+        ));
+        const foraPlayers = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(
+            Model.JogadoresFora.Select(j => new { j.JogadorId, j.Nome })
+        ));
+
+        let casaCount = 0, foraCount = 0;
+
+        function addGoal(side) {
+            const isCasa = side === 'casa';
+            const players = isCasa ? casaPlayers : foraPlayers;
+            const container = document.getElementById(side + '-goals');
+            const idx = isCasa ? casaCount++ : foraCount++;
+
+            // Atualiza placar oculto
+            const scoreInput = document.getElementById(isCasa ? 'GolsTimeCasa' : 'GolsTimeFora');
+            scoreInput.value = parseInt(scoreInput.value) + 1;
+
+            // Cria grupo de inputs
+            const wrapper = document.createElement('div');
+            wrapper.className = 'input-group mb-2';
+            wrapper.style.marginBottom = '10px';
+
+            // Hidden para binding de coleção
+            const indexMarker = document.createElement('input');
+            indexMarker.type = 'hidden';
+            indexMarker.name = 'Estatisticas.Index';
+            indexMarker.value = idx;
+            wrapper.appendChild(indexMarker);
+
+            // Select de jogador
+            const select = document.createElement('select');
+            select.name = `Estatisticas[${idx}].JogadorId`;
+            select.className = 'form-control';
+            players.forEach(p => {
+                const opt = document.createElement('option');
+                opt.value = p.JogadorId;
+                opt.text = p.Nome;
+                select.appendChild(opt);
+            });
+            wrapper.appendChild(select);
+
+            // Hidden de gols
+            const hiddenG = document.createElement('input');
+            hiddenG.type = 'hidden';
+            hiddenG.name = `Estatisticas[${idx}].GolsJogador`;
+            hiddenG.value = '1';
+            wrapper.appendChild(hiddenG);
+
+            // Botão remover
+            const rmBtn = document.createElement('button');
+            rmBtn.type = 'button';
+            rmBtn.className = 'btn btn-danger';
+            rmBtn.style.marginLeft = '5px';
+            rmBtn.innerText = '×';
+            rmBtn.onclick = () => {
+                scoreInput.value = Math.max(0, parseInt(scoreInput.value) - 1);
+                wrapper.remove();
+            };
+            wrapper.appendChild(rmBtn);
+
+            container.appendChild(wrapper);
+        }
+
+        document.getElementById('addCasaGoalBtn')
+            .addEventListener('click', () => addGoal('casa'));
+        document.getElementById('addForaGoalBtn')
+            .addEventListener('click', () => addGoal('fora'));
+    </script>
+}

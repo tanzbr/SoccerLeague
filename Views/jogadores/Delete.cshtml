@@ -1,0 +1,62 @@
+@model SoccerLeague.Models.Jogador
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Excluir Jogador";
+}
+
+<h2>Excluir Jogador</h2>
+
+<h3>Tem certeza que deseja excluir o seguinte jogador?</h3>
+
+<div class="details-container">
+    <table class="table table-bordered table-striped">
+        <tr>
+            <th>Nome</th>
+            <td>@Model.Nome</td>
+        </tr>
+        <tr>
+            <th>Data de Nascimento</th>
+            <td>@Model.DataNascimento.ToShortDateString()</td>
+        </tr>
+        <tr>
+            <th>Nacionalidade</th>
+            <td>@Model.Nacionalidade</td>
+        </tr>
+        <tr>
+            <th>Posição</th>
+            <td>@Model.Posicao</td>
+        </tr>
+        <tr>
+            <th>Número da Camisa</th>
+            <td>@Model.NumeroCamisa</td>
+        </tr>
+        <tr>
+            <th>Altura</th>
+            <td>@Model.Altura</td>
+        </tr>
+        <tr>
+            <th>Peso</th>
+            <td>@Model.Peso</td>
+        </tr>
+        <tr>
+            <th>Pé Preferido</th>
+            <td>@Model.PePreferido</td>
+        </tr>
+        <tr>
+            <th>Time</th>
+            <td>@(Model.Time != null ? Model.Time.Nome : "Não vinculado")</td>
+        </tr>
+    </table>
+</div>
+
+@using (Html.BeginForm("Delete", "Jogadores", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.JogadorId)
+
+    <div class="form-group" style="margin-top:15px;">
+        <input type="submit" value="Excluir" class="btn btn-danger" />
+        @Html.ActionLink("Cancelar", "Index", null, new { @class = "btn btn-default" })
+    </div>
+}

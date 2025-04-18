@@ -1,0 +1,42 @@
+﻿@model IEnumerable<SoccerLeague.ViewModels.TimeStatusViewModel>
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Times da Liga";
+}
+
+<h2 style="margin-bottom: 15px">Lista de Times</h2>
+
+<p class="btn-link">@Html.ActionLink("Criar Novo Time", "Create")</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Nome</th>
+            <th>Cidade</th>
+            <th>Estado</th>
+            <th>Apto</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            bool apto = item.Apto;
+            string tooltip = apto ? "Apto para a Liga" : string.Join(" | ", item.Pendencias);
+        <tr>
+            <td>@item.Time.Nome</td>
+            <td>@item.Time.Cidade</td>
+            <td>@item.Time.Estado</td>
+            <td>
+                <span class="status-icon @(apto ? "status-green" : "status-red")" title="@tooltip"></span>
+            </td>
+            <td>
+                @Html.ActionLink("Detalhes", "Details", new { id = item.Time.TimeId }) |
+                @Html.ActionLink("Editar", "Edit", new { id = item.Time.TimeId }) |
+                @Html.ActionLink("Excluir", "Delete", new { id = item.Time.TimeId })
+            </td>
+        </tr>
+        }
+    </tbody>
+</table>

@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="packages\EntityFramework.6.5.1\build\EntityFramework.props" Condition="Exists('packages\EntityFramework.6.5.1\build\EntityFramework.props')" />
   <Import Project="packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props" Condition="Exists('packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" />
+  <Import Project="packages\EntityFramework.6.5.1\build\EntityFramework.props" Condition="Exists('packages\EntityFramework.6.5.1\build\EntityFramework.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -15,7 +15,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SoccerLeague</RootNamespace>
     <AssemblyName>SoccerLeague</AssemblyName>
-    <TargetFrameworkVersion>v4.8.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <MvcBuildViews>false</MvcBuildViews>
     <UseIISExpress>true</UseIISExpress>
     <Use64BitIISExpress />
@@ -26,6 +26,7 @@
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -52,6 +53,9 @@
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>packages\EntityFramework.6.5.1\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=2.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -60,11 +64,7 @@
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Web" />
-    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Web.Abstractions" />
     <Reference Include="System.Web.Routing" />
     <Reference Include="System.Xml" />
@@ -119,14 +119,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform">
-      <HintPath>packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Controllers\ArtilhariaController.cs" />
     <Compile Include="Controllers\ComissaoTecnicaController.cs" />
     <Compile Include="Controllers\EstatisticasPartidasController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -142,6 +138,18 @@
     <Compile Include="Migrations\202504111300598_InitialCreate.Designer.cs">
       <DependentUpon>202504111300598_InitialCreate.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202504171411014_UpdateSeed.cs" />
+    <Compile Include="Migrations\202504171411014_UpdateSeed.Designer.cs">
+      <DependentUpon>202504171411014_UpdateSeed.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202504172303326_AddRoundNumberToPartida.cs" />
+    <Compile Include="Migrations\202504172303326_AddRoundNumberToPartida.Designer.cs">
+      <DependentUpon>202504172303326_AddRoundNumberToPartida.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202504180111196_AddJogadoToPartida.cs" />
+    <Compile Include="Migrations\202504180111196_AddJogadoToPartida.Designer.cs">
+      <DependentUpon>202504180111196_AddJogadoToPartida.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ComissaoTecnica.cs" />
     <Compile Include="Models\EstatisticaPartida.cs" />
@@ -150,6 +158,28 @@
     <Compile Include="Models\Tabela.cs" />
     <Compile Include="Models\Time.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\LeagueManager.cs" />
+    <Compile Include="Services\FixtureGenerator.cs" />
+    <Compile Include="Services\ClassificationService.cs" />
+    <Compile Include="ViewModels\ArtilhariaViewModel.cs" />
+    <Compile Include="ViewModels\HomeIndexViewModel.cs" />
+    <Compile Include="ViewModels\RegistrarResultadoViewModel.cs" />
+    <Compile Include="ViewModels\PartidaDetailsViewModel.cs" />
+    <Compile Include="ViewModels\TimeStatusViewModel.cs" />
+    <Content Include="Views\Jogadores\Create.cshtml" />
+    <Content Include="Views\Jogadores\Edit.cshtml" />
+    <Content Include="Views\Jogadores\Details.cshtml" />
+    <Content Include="Views\ComissaoTecnica\Index.cshtml" />
+    <Content Include="Views\ComissaoTecnica\_ComissaoTecnicaForm.cshtml" />
+    <Content Include="Views\ComissaoTecnica\Create.cshtml" />
+    <Content Include="Views\ComissaoTecnica\Edit.cshtml" />
+    <Content Include="Views\ComissaoTecnica\Details.cshtml" />
+    <Content Include="Views\ComissaoTecnica\Delete.cshtml" />
+    <Content Include="Views\Jogadores\Delete.cshtml" />
+    <Content Include="Views\Artilharia\Index.cshtml" />
+    <None Include="Views\Jogadores\_JogadorForm.cshtml" />
+    <Content Include="Views\Partidas\Index.cshtml" />
+    <Content Include="Views\Partidas\Details.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap-grid.css" />
@@ -203,15 +233,21 @@
     <Content Include="Views\Home\About.cshtml" />
     <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
+    <Content Include="Views\Home\_TabelaParcial.cshtml" />
+    <Content Include="Views\Home\_PartidasParcial.cshtml" />
+    <Content Include="Views\Times\Index.cshtml" />
+    <Content Include="Views\Partidas\RegistrarResultado.cshtml" />
+    <Content Include="Views\Times\Create.cshtml" />
+    <Content Include="Views\Times\Edit.cshtml" />
+    <Content Include="Views\Times\_TimeForm.cshtml" />
+    <Content Include="Views\Times\Details.cshtml" />
+    <Content Include="Views\Times\Delete.cshtml" />
+    <Content Include="Views\Jogadores\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Views\ComissaoTecnica\" />
     <Folder Include="Views\EstatisticasPartidas\" />
-    <Folder Include="Views\Jogadores\" />
-    <Folder Include="Views\Partidas\" />
     <Folder Include="Views\Tabelas\" />
-    <Folder Include="Views\Times\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.rtl.min.css.map" />
@@ -243,6 +279,15 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\202504111300598_InitialCreate.resx">
       <DependentUpon>202504111300598_InitialCreate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202504171411014_UpdateSeed.resx">
+      <DependentUpon>202504171411014_UpdateSeed.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202504172303326_AddRoundNumberToPartida.resx">
+      <DependentUpon>202504172303326_AddRoundNumberToPartida.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202504180111196_AddJogadoToPartida.resx">
+      <DependentUpon>202504180111196_AddJogadoToPartida.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
@@ -277,9 +322,9 @@
     <PropertyGroup>
       <ErrorText>Este projeto faz referência a pacotes do NuGet que não estão presentes neste computador. Use a Restauração de Pacotes do NuGet para baixá-los.  Para obter mais informações, consulte http://go.microsoft.com/fwlink/?LinkID=322105. O arquivo ausente é {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props'))" />
     <Error Condition="!Exists('packages\EntityFramework.6.5.1\build\EntityFramework.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\EntityFramework.6.5.1\build\EntityFramework.props'))" />
     <Error Condition="!Exists('packages\EntityFramework.6.5.1\build\EntityFramework.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\EntityFramework.6.5.1\build\EntityFramework.targets'))" />
+    <Error Condition="!Exists('packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props'))" />
   </Target>
   <Import Project="packages\EntityFramework.6.5.1\build\EntityFramework.targets" Condition="Exists('packages\EntityFramework.6.5.1\build\EntityFramework.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.

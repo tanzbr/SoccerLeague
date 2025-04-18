@@ -14,26 +14,23 @@ namespace SoccerLeague.Controllers
     {
         private readonly SoccerDbContext db = new SoccerDbContext();
 
-        // GET: Jogadores
-        // Exemplo de pesquisa por nome, posição e pé preferido.
+        // GET: Jogadores — lista com filtros de nome, posição e pé preferido
         public ActionResult Index(string nome, PosicaoJogador? posicao, PePreferido? pe)
         {
             var jogadores = db.Jogadores.Include(j => j.Time).AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(nome))
-            {
                 jogadores = jogadores.Where(j => j.Nome.Contains(nome));
-            }
 
             if (posicao.HasValue)
-            {
                 jogadores = jogadores.Where(j => j.Posicao == posicao.Value);
-            }
 
             if (pe.HasValue)
-            {
                 jogadores = jogadores.Where(j => j.PePreferido == pe.Value);
-            }
+
+            // prepara os enums para os dropdowns
+            ViewBag.Posicoes = Enum.GetValues(typeof(PosicaoJogador));
+            ViewBag.Pes = Enum.GetValues(typeof(PePreferido));
 
             return View(jogadores.ToList());
         }
@@ -72,7 +69,7 @@ namespace SoccerLeague.Controllers
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-
+            // se falhar validação, repopula dropdown e retorna view
             ViewBag.TimeId = new SelectList(db.Times, "TimeId", "Nome", jogador.TimeId);
             return View(jogador);
         }
@@ -136,9 +133,7 @@ namespace SoccerLeague.Controllers
         protected override void Dispose(bool disposing)
         {
             if (disposing)
-            {
                 db.Dispose();
-            }
             base.Dispose(disposing);
         }
     }

@@ -1,0 +1,76 @@
+@model IEnumerable<SoccerLeague.Models.Jogador>
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Gerenciamento de Jogadores";
+}
+
+<h2 style="margin-bottom: 15px">Gerenciamento de Jogadores</h2>
+
+<p style="margin-bottom: 15px">
+    @Html.ActionLink("Cadastrar Novo Jogador", "Create", "Jogadores", null, new { @class = "btn btn-success" })
+</p>
+
+@using (Html.BeginForm("Index", "Jogadores", FormMethod.Get))
+{
+    <div class="form-inline">
+        <div class="form-group">
+            @Html.Label("Nome:")
+            @Html.TextBox("nome", Request["nome"] as string, new { @class = "form-control", placeholder = "Nome do jogador" })
+        </div>
+        <div class="form-group">
+            @Html.Label("Posição:")
+            @Html.DropDownList("posicao", new SelectList(ViewBag.Posicoes, Request["posicao"]), "Selecione", new { @class = "form-control" })
+        </div>
+        <div class="form-group">
+            @Html.Label("Pé Preferido:")
+            @Html.DropDownList("pe", new SelectList(ViewBag.Pes, Request["pe"]), "Selecione", new { @class = "form-control" })
+        </div>
+        <button type="submit" class="btn btn-primary">Pesquisar</button>
+    </div>
+}
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Nome</th>
+            <th>Data de Nascimento</th>
+            <th>Nacionalidade</th>
+            <th>Posição</th>
+            <th>N° Camisa</th>
+            <th>Altura</th>
+            <th>Pé Preferido</th>
+            <th>Time</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.Any())
+        {
+            foreach (var jogador in Model)
+            {
+                <tr>
+                    <td>@jogador.Nome</td>
+                    <td>@jogador.DataNascimento.ToShortDateString()</td>
+                    <td>@jogador.Nacionalidade</td>
+                    <td>@jogador.Posicao</td>
+                    <td>@jogador.NumeroCamisa</td>
+                    <td>@jogador.Altura</td>
+                    <td>@jogador.PePreferido</td>
+                    <td>@(jogador.Time != null ? jogador.Time.Nome : "N/D")</td>
+                    <td>
+                        @Html.ActionLink("Detalhes", "Details", new { id = jogador.JogadorId }, new { @class = "btn btn-info btn-sm" })
+                        @Html.ActionLink("Editar", "Edit", new { id = jogador.JogadorId }, new { @class = "btn btn-warning btn-sm" })
+                        @Html.ActionLink("Excluir", "Delete", new { id = jogador.JogadorId }, new { @class = "btn btn-danger btn-sm" })
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="9">Nenhum jogador encontrado.</td>
+            </tr>
+        }
+    </tbody>
+</table>

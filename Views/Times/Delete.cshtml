@@ -1,0 +1,48 @@
+﻿@model SoccerLeague.Models.Time
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Excluir Time";
+}
+
+<h2>Excluir Time</h2>
+
+<h3>Tem certeza que deseja excluir o seguinte time?</h3>
+
+<div class="details-container">
+    <h4>@Model.Nome</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>Cidade</dt>
+        <dd>@Model.Cidade</dd>
+
+        <dt>Estado</dt>
+        <dd>@Model.Estado</dd>
+
+        <dt>Ano de Fundação</dt>
+        <dd>@Model.AnoFundacao</dd>
+
+        <dt>Estádio</dt>
+        <dd>@Model.Estadio</dd>
+
+        <dt>Capacidade do Estádio</dt>
+        <dd>@Model.CapacidadeEstadio</dd>
+
+        <dt>Uniforme Primário</dt>
+        <dd>@Model.CorUniformePrimaria</dd>
+
+        <dt>Uniforme Secundário</dt>
+        <dd>@Model.CorUniformeSecundaria</dd>
+    </dl>
+</div>
+
+@using (Html.BeginForm("Delete", "Times", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.TimeId)
+
+    <div class="form-group">
+        <input type="submit" value="Excluir" class="btn btn-danger" />
+        @Html.ActionLink("Voltar à Lista", "Index", null, new { @class = "btn btn-default" })
+    </div>
+}

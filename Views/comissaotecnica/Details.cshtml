@@ -1,0 +1,34 @@
+@model SoccerLeague.Models.ComissaoTecnica
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Detalhes do Membro da Comissão Técnica";
+}
+
+<h2>Detalhes do Membro da Comissão Técnica</h2>
+
+<div class="details-container">
+    <table class="table table-bordered table-striped">
+        <tr>
+            <th>Nome</th>
+            <td>@Model.Nome</td>
+        </tr>
+        <tr>
+            <th>Data de Nascimento</th>
+            <td>@Model.DataNascimento.ToShortDateString()</td>
+        </tr>
+        <tr>
+            <th>Cargo</th>
+            <td>@Model.Cargo</td>
+        </tr>
+        <tr>
+            <th>Time</th>
+            <td>@(Model.Time != null ? Model.Time.Nome : "Não vinculado")</td>
+        </tr>
+    </table>
+</div>
+
+<div class="actions" style="margin-top:15px;">
+    @Html.ActionLink("Editar", "Edit", new { id = Model.ComissaoTecnicaId }, new { @class = "btn btn-warning" })
+    @Html.ActionLink("Voltar à Lista", "Index", null, new { @class = "btn btn-default" })
+</div>

@@ -1,0 +1,55 @@
+@model SoccerLeague.Models.Jogador
+
+<div class="form-group">
+    @Html.LabelFor(m => m.Nome)
+    @Html.TextBoxFor(m => m.Nome, new { @class = "form-control", placeholder = "Nome do Jogador" })
+    @Html.ValidationMessageFor(m => m.Nome)
+</div>
+
+<div class="form-group">
+    @Html.LabelFor(m => m.DataNascimento)
+    @Html.TextBoxFor(m => m.DataNascimento, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
+    @Html.ValidationMessageFor(m => m.DataNascimento)
+</div>
+
+<div class="form-group">
+    @Html.LabelFor(m => m.Nacionalidade)
+    @Html.TextBoxFor(m => m.Nacionalidade, new { @class = "form-control", placeholder = "Nacionalidade" })
+    @Html.ValidationMessageFor(m => m.Nacionalidade)
+</div>
+
+<div class="form-group">
+    @Html.LabelFor(m => m.Posicao)
+    @Html.DropDownListFor(m => m.Posicao, new SelectList(Enum.GetValues(typeof(SoccerLeague.Models.PosicaoJogador))), "Selecione", new { @class = "form-control" })
+    @Html.ValidationMessageFor(m => m.Posicao)
+</div>
+
+<div class="form-group">
+    @Html.LabelFor(m => m.NumeroCamisa)
+    @Html.TextBoxFor(m => m.NumeroCamisa, new { @class = "form-control", type = "number" })
+    @Html.ValidationMessageFor(m => m.NumeroCamisa)
+</div>
+
+<div class="form-group">
+    @Html.LabelFor(m => m.Altura)
+    @Html.TextBoxFor(m => m.Altura, new { @class = "form-control", type = "number", step = "0.01" })
+    @Html.ValidationMessageFor(m => m.Altura)
+</div>
+
+<div class="form-group">
+    @Html.LabelFor(m => m.Peso)
+    @Html.TextBoxFor(m => m.Peso, new { @class = "form-control", type = "number", step = "0.01" })
+    @Html.ValidationMessageFor(m => m.Peso)
+</div>
+
+<div class="form-group">
+    @Html.LabelFor(m => m.PePreferido)
+    @Html.DropDownListFor(m => m.PePreferido, new SelectList(Enum.GetValues(typeof(SoccerLeague.Models.PePreferido))), "Selecione", new { @class = "form-control" })
+    @Html.ValidationMessageFor(m => m.PePreferido)
+</div>
+
+<div class="form-group">
+    @Html.LabelFor(m => m.TimeId)
+    @Html.DropDownListFor(m => m.TimeId, (SelectList)ViewBag.TimeId, "Selecione", new { @class = "form-control" })
+    @Html.ValidationMessageFor(m => m.TimeId)
+</div>

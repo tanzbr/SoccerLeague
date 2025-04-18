@@ -1,0 +1,22 @@
+@model SoccerLeague.Models.Jogador
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Cadastrar Jogador";
+}
+
+<h2>Cadastrar Jogador</h2>
+
+@using (Html.BeginForm("Create", "Jogadores", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+
+    @Html.Partial("_JogadorForm", Model)
+
+    <button type="submit" class="btn btn-primary">Salvar</button>
+    @Html.ActionLink("Voltar", "Index", null, new { @class = "btn btn-default" })
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

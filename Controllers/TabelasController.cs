@@ -1,11 +1,7 @@
 ﻿using SoccerLeague.Data;
-using SoccerLeague.Models;
+using SoccerLeague.Services;
 using System;
-using System.Collections.Generic;
-using System.Data.Entity;
 using System.Linq;
-using System.Net;
-using System.Web;
 using System.Web.Mvc;
 
 namespace SoccerLeague.Controllers
@@ -14,126 +10,61 @@ namespace SoccerLeague.Controllers
     {
         private readonly SoccerDbContext db = new SoccerDbContext();
 
-        // GET: Tabelas
-        // Exemplo de pesquisa por nome do time
-        public ActionResult Index(string nomeTime)
+        // POST: Tabelas/SortearPartidas
+        [HttpPost, ValidateAntiForgeryToken]
+        public ActionResult SortearPartidas()
         {
-            var tabelas = db.Tabelas
-                            .Include(t => t.Time)
-                            .AsQueryable();
-
-            if (!string.IsNullOrWhiteSpace(nomeTime))
+            // se já houver partidas, recusa a operação
+            if (db.Partidas.Any())
             {
-                tabelas = tabelas.Where(t => t.Time.Nome.Contains(nomeTime));
-            }
-
-            // Possível ordenação por pontos, saldo de gols etc.
-            tabelas = tabelas.OrderByDescending(t => t.Pontos)
-                             .ThenByDescending(t => t.SaldoGols);
-
-            return View(tabelas.ToList());
-        }
-
-        // GET: Tabelas/Details/5
-        public ActionResult Details(int? id)
-        {
-            if (!id.HasValue)
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-
-            var tabela = db.Tabelas
-                           .Include(t => t.Time)
-                           .FirstOrDefault(t => t.TabelaId == id.Value);
-
-            if (tabela == null)
-                return HttpNotFound();
-
-            return View(tabela);
-        }
-
-        // GET: Tabelas/Create
-        public ActionResult Create()
-        {
-            ViewBag.TimeId = new SelectList(db.Times, "TimeId", "Nome");
-            return View();
-        }
-
-        // POST: Tabelas/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(Tabela tabela)
-        {
-            if (ModelState.IsValid)
-            {
-                db.Tabelas.Add(tabela);
-                db.SaveChanges();
+                TempData["SortearError"] = "As partidas já foram sorteadas e não podem ser geradas novamente.";
                 return RedirectToAction("Index");
             }
-            ViewBag.TimeId = new SelectList(db.Times, "TimeId", "Nome", tabela.TimeId);
-            return View(tabela);
-        }
 
-        // GET: Tabelas/Edit/5
-        public ActionResult Edit(int? id)
-        {
-            if (!id.HasValue)
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-
-            var tabela = db.Tabelas.Find(id);
-            if (tabela == null)
-                return HttpNotFound();
-
-            ViewBag.TimeId = new SelectList(db.Times, "TimeId", "Nome", tabela.TimeId);
-            return View(tabela);
-        }
-
-        // POST: Tabelas/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(Tabela tabela)
-        {
-            if (ModelState.IsValid)
+            // Verifica se a liga está pronta
+            var leagueManager = new LeagueManager(db);
+            var leagueErrors = leagueManager.ValidateLeague();
+            if (leagueErrors.Any())
             {
-                db.Entry(tabela).State = EntityState.Modified;
-                db.SaveChanges();
+                TempData["SortearError"] = "Não é possível sortear as partidas: " + string.Join(" • ", leagueErrors);
                 return RedirectToAction("Index");
             }
-            ViewBag.TimeId = new SelectList(db.Times, "TimeId", "Nome", tabela.TimeId);
-            return View(tabela);
-        }
 
-        // GET: Tabelas/Delete/5
-        public ActionResult Delete(int? id)
-        {
-            if (!id.HasValue)
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-
-            var tabela = db.Tabelas
-                           .Include(t => t.Time)
-                           .FirstOrDefault(t => t.TabelaId == id.Value);
-
-            if (tabela == null)
-                return HttpNotFound();
-
-            return View(tabela);
-        }
-
-        // POST: Tabelas/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
-        {
-            var tabela = db.Tabelas.Find(id);
-            db.Tabelas.Remove(tabela);
+            var teams = db.Times.ToList();
+            
+            // sortear partidas
+            var fixtureGenerator = new FixtureGenerator();
+            DateTime startDate = DateTime.Today.AddDays(1);
+            int daysInterval = 7;
+            var fixture = fixtureGenerator.GenerateFixture(teams, startDate, daysInterval);
+            db.Partidas.AddRange(fixture);
             db.SaveChanges();
-            return RedirectToAction("Index");
+
+            TempData["SortearSuccess"] = "Partidas sorteadas com sucesso!";
+            return RedirectToAction("Index", "Home");
+        }
+
+        // POST: Tabelas/ResetarTabela
+        [HttpPost, ValidateAntiForgeryToken]
+        public ActionResult ResetarTabela()
+        {
+            try
+            {
+                db.EstatisticasPartidas.RemoveRange(db.EstatisticasPartidas);
+                db.Partidas.RemoveRange(db.Partidas);
+                db.SaveChanges();
+                TempData["ResetSuccess"] = "Todas as partidas e estatísticas foram removidas com sucesso.";
+            }
+            catch (Exception ex)
+            {
+                TempData["ResetError"] = "Erro ao resetar: " + ex.Message;
+            }
+            return RedirectToAction("Index", "Home");
         }
 
         protected override void Dispose(bool disposing)
         {
-            if (disposing)
-            {
-                db.Dispose();
-            }
+            if (disposing) db.Dispose();
             base.Dispose(disposing);
         }
     }

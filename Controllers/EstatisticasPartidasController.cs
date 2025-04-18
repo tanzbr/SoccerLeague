@@ -17,6 +17,7 @@ namespace SoccerLeague.Controllers
         // GET: EstatisticasPartidas
         public ActionResult Index()
         {
+            // traz todas as estatísticas, incluindo jogador e partida
             var estatisticas = db.EstatisticasPartidas
                                  .Include(e => e.Jogador)
                                  .Include(e => e.Partida)
@@ -27,14 +28,17 @@ namespace SoccerLeague.Controllers
         // GET: EstatisticasPartidas/Details/5
         public ActionResult Details(int? id)
         {
+            // se não passou o id, retornar BadRequest
             if (!id.HasValue)
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
 
+            // procura a estatística com o jogador e partida carregados
             var estatistica = db.EstatisticasPartidas
                                 .Include(e => e.Jogador)
                                 .Include(e => e.Partida)
                                 .FirstOrDefault(e => e.EstatisticaPartidaId == id.Value);
 
+            // se não achou, 404
             if (estatistica == null)
                 return HttpNotFound();
 
@@ -44,6 +48,7 @@ namespace SoccerLeague.Controllers
         // GET: EstatisticasPartidas/Create
         public ActionResult Create()
         {
+            // retorna uma lista de jogadores e partidas pro dropdown
             ViewBag.JogadorId = new SelectList(db.Jogadores, "JogadorId", "Nome");
             ViewBag.PartidaId = new SelectList(db.Partidas, "PartidaId", "PartidaId");
             return View();
@@ -56,10 +61,12 @@ namespace SoccerLeague.Controllers
         {
             if (ModelState.IsValid)
             {
+                // se tudo OK, adiciona e salva
                 db.EstatisticasPartidas.Add(estatistica);
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
+            // se tiver falha no ModelState, recarrega os dropdowns
             ViewBag.JogadorId = new SelectList(db.Jogadores, "JogadorId", "Nome", estatistica.JogadorId);
             ViewBag.PartidaId = new SelectList(db.Partidas, "PartidaId", "PartidaId", estatistica.PartidaId);
             return View(estatistica);
@@ -71,10 +78,12 @@ namespace SoccerLeague.Controllers
             if (!id.HasValue)
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
 
+            // busca direto pelo PK
             var estatistica = db.EstatisticasPartidas.Find(id);
             if (estatistica == null)
                 return HttpNotFound();
 
+            // repopula dropdowns com o valor atual selecionado
             ViewBag.JogadorId = new SelectList(db.Jogadores, "JogadorId", "Nome", estatistica.JogadorId);
             ViewBag.PartidaId = new SelectList(db.Partidas, "PartidaId", "PartidaId", estatistica.PartidaId);
             return View(estatistica);
@@ -87,10 +96,12 @@ namespace SoccerLeague.Controllers
         {
             if (ModelState.IsValid)
             {
+                // marca como modificado e manda no SaveChanges
                 db.Entry(estatistica).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
+            // se falhar, recarrega dropdowns e mostra a view de novo
             ViewBag.JogadorId = new SelectList(db.Jogadores, "JogadorId", "Nome", estatistica.JogadorId);
             ViewBag.PartidaId = new SelectList(db.Partidas, "PartidaId", "PartidaId", estatistica.PartidaId);
             return View(estatistica);
@@ -102,6 +113,7 @@ namespace SoccerLeague.Controllers
             if (!id.HasValue)
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
 
+            // inclui jogador e partida pra exibir detalhes antes de deletar
             var estatistica = db.EstatisticasPartidas
                                 .Include(e => e.Jogador)
                                 .Include(e => e.Partida)

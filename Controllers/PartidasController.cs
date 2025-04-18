@@ -1,11 +1,11 @@
 ﻿using SoccerLeague.Data;
 using SoccerLeague.Models;
+using SoccerLeague.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Net;
-using System.Web;
 using System.Web.Mvc;
 
 namespace SoccerLeague.Controllers
@@ -15,14 +15,27 @@ namespace SoccerLeague.Controllers
         private readonly SoccerDbContext db = new SoccerDbContext();
 
         // GET: Partidas
-        // Poderíamos filtrar por Estádio, Data, Rodada etc., mas aqui está simples.
-        public ActionResult Index()
+        public ActionResult Index(int? round)
         {
             var partidas = db.Partidas
                              .Include(p => p.TimeCasa)
-                             .Include(p => p.TimeFora)
-                             .ToList();
-            return View(partidas);
+                             .Include(p => p.TimeFora);
+
+            var rounds = partidas
+                         .Select(p => p.RoundNumber)
+                         .Distinct()
+                         .OrderBy(r => r)
+                         .ToList();
+            ViewBag.Rounds = new SelectList(rounds, round);
+
+            if (round.HasValue)
+                partidas = partidas.Where(p => p.RoundNumber == round.Value);
+
+            ViewBag.SelectedRound = round;
+            return View(partidas
+                        .OrderBy(p => p.RoundNumber)
+                        .ThenBy(p => p.DataPartida)
+                        .ToList());
         }
 
         // GET: Partidas/Details/5
@@ -34,72 +47,44 @@ namespace SoccerLeague.Controllers
             var partida = db.Partidas
                             .Include(p => p.TimeCasa)
                             .Include(p => p.TimeFora)
-                            .Include(p => p.Estatisticas.Select(e => e.Jogador))
                             .FirstOrDefault(p => p.PartidaId == id.Value);
-
             if (partida == null)
                 return HttpNotFound();
 
-            return View(partida);
-        }
+            var jogadoresCasa = db.Jogadores
+                                  .Where(j => j.TimeId == partida.TimeCasaId)
+                                  .ToList();
+            var jogadoresFora = db.Jogadores
+                                  .Where(j => j.TimeId == partida.TimeForaId)
+                                  .ToList();
 
-        // GET: Partidas/Create
-        public ActionResult Create()
-        {
-            ViewBag.TimeCasaId = new SelectList(db.Times, "TimeId", "Nome");
-            ViewBag.TimeForaId = new SelectList(db.Times, "TimeId", "Nome");
-            return View();
-        }
+            var comissaoCasa = db.ComissoesTecnicas
+                                 .Where(c => c.TimeId == partida.TimeCasaId)
+                                 .ToList();
+            var comissaoFora = db.ComissoesTecnicas
+                                 .Where(c => c.TimeId == partida.TimeForaId)
+                                 .ToList();
 
-        // POST: Partidas/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(Partida partida)
-        {
-            if (ModelState.IsValid)
+            var estatisticas = db.EstatisticasPartidas
+                                 .Include(e => e.Jogador)
+                                 .Where(e => e.PartidaId == partida.PartidaId)
+                                 .ToList();
+
+            var vm = new PartidaDetailsViewModel
             {
-                db.Partidas.Add(partida);
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }
-            ViewBag.TimeCasaId = new SelectList(db.Times, "TimeId", "Nome", partida.TimeCasaId);
-            ViewBag.TimeForaId = new SelectList(db.Times, "TimeId", "Nome", partida.TimeForaId);
-            return View(partida);
+                Partida = partida,
+                JogadoresCasa = jogadoresCasa,
+                JogadoresFora = jogadoresFora,
+                ComissaoCasa = comissaoCasa,
+                ComissaoFora = comissaoFora,
+                Estatisticas = estatisticas
+            };
+
+            return View(vm);
         }
 
-        // GET: Partidas/Edit/5
-        public ActionResult Edit(int? id)
-        {
-            if (!id.HasValue)
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-
-            var partida = db.Partidas.Find(id);
-            if (partida == null)
-                return HttpNotFound();
-
-            ViewBag.TimeCasaId = new SelectList(db.Times, "TimeId", "Nome", partida.TimeCasaId);
-            ViewBag.TimeForaId = new SelectList(db.Times, "TimeId", "Nome", partida.TimeForaId);
-            return View(partida);
-        }
-
-        // POST: Partidas/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(Partida partida)
-        {
-            if (ModelState.IsValid)
-            {
-                db.Entry(partida).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }
-            ViewBag.TimeCasaId = new SelectList(db.Times, "TimeId", "Nome", partida.TimeCasaId);
-            ViewBag.TimeForaId = new SelectList(db.Times, "TimeId", "Nome", partida.TimeForaId);
-            return View(partida);
-        }
-
-        // GET: Partidas/Delete/5
-        public ActionResult Delete(int? id)
+        // GET: Partidas/RegistrarResultado/5
+        public ActionResult RegistrarResultado(int? id)
         {
             if (!id.HasValue)
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -108,32 +93,72 @@ namespace SoccerLeague.Controllers
                             .Include(p => p.TimeCasa)
                             .Include(p => p.TimeFora)
                             .FirstOrDefault(p => p.PartidaId == id.Value);
-
             if (partida == null)
                 return HttpNotFound();
 
-            return View(partida);
+            var jogadoresCasa = db.Jogadores
+                                  .Where(j => j.TimeId == partida.TimeCasaId)
+                                  .ToList();
+            var jogadoresFora = db.Jogadores
+                                  .Where(j => j.TimeId == partida.TimeForaId)
+                                  .ToList();
+
+            var viewModel = new RegistrarResultadoViewModel
+            {
+                Partida = partida,
+                JogadoresCasa = jogadoresCasa,
+                JogadoresFora = jogadoresFora,
+                Estatisticas = new List<EstatisticaPartida>()
+            };
+
+            return View(viewModel);
         }
 
-        // POST: Partidas/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
+        // POST: Partidas/RegistrarResultado
+        [HttpPost, ValidateAntiForgeryToken]
+        public ActionResult RegistrarResultado(RegistrarResultadoViewModel model)
         {
-            var partida = db.Partidas.Find(id);
-            db.Partidas.Remove(partida);
+            // inicializa se nulo
+            if (model.Estatisticas == null)
+                model.Estatisticas = new List<EstatisticaPartida>();
+
+            if (!ModelState.IsValid)
+            {
+                // recarrega jogadores e retorna a view
+                model.JogadoresCasa = db.Jogadores.Where(j => j.TimeId == model.Partida.TimeCasaId).ToList();
+                model.JogadoresFora = db.Jogadores.Where(j => j.TimeId == model.Partida.TimeForaId).ToList();
+                return View(model);
+            }
+
+            var partida = db.Partidas.Find(model.Partida.PartidaId);
+            if (partida == null) return HttpNotFound();
+
+            partida.GolsTimeCasa = model.Partida.GolsTimeCasa;
+            partida.GolsTimeFora = model.Partida.GolsTimeFora;
+            partida.Jogado = true;
+            db.Entry(partida).State = EntityState.Modified;
             db.SaveChanges();
+
+            // remove antigos e adiciona novos
+            var old = db.EstatisticasPartidas.Where(e => e.PartidaId == partida.PartidaId);
+            db.EstatisticasPartidas.RemoveRange(old);
+            db.SaveChanges();
+
+            foreach (var e in model.Estatisticas)
+            {
+                e.PartidaId = partida.PartidaId;
+                db.EstatisticasPartidas.Add(e);
+            }
+            db.SaveChanges();
+
             return RedirectToAction("Index");
         }
 
         protected override void Dispose(bool disposing)
         {
             if (disposing)
-            {
                 db.Dispose();
-            }
             base.Dispose(disposing);
         }
     }
-
 }

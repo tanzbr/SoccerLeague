@@ -1,0 +1,22 @@
+@model SoccerLeague.Models.ComissaoTecnica
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Cadastrar Membro da Comissão Técnica";
+}
+
+<h2>Cadastrar Membro da Comissão Técnica</h2>
+
+@using (Html.BeginForm("Create", "ComissaoTecnica", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+
+    @Html.Partial("_ComissaoTecnicaForm", Model)
+
+    <button type="submit" class="btn btn-primary">Salvar</button>
+    @Html.ActionLink("Voltar", "Index", null, new { @class = "btn btn-default" })
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

@@ -1,0 +1,74 @@
+﻿@model IEnumerable<SoccerLeague.Models.Partida>
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Partidas";
+    int? selected = ViewBag.SelectedRound as int?;
+}
+
+<h2 style="margin-bottom: 5px">Partidas</h2>
+<p style="margin-bottom: 15px; font-size: 14px">
+    As partidas são sorteadas automaticamente ao iniciar a liga. Depois de criadas, você pode cadastrar o resultado por aqui.
+</p>
+
+<div class="form-group">
+    <label>Rodada:</label>
+    @using (Html.BeginForm("Index", "Partidas", FormMethod.Get, new { @class = "form-inline" }))
+    {
+        @Html.DropDownList(
+            "round",
+            (SelectList)ViewBag.Rounds,
+            "Todas as Rodadas",
+            new { @class = "form-control", onchange = "this.form.submit()" }
+        )
+    }
+</div>
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Rodada</th>
+            <th>Data</th>
+            <th>Casa</th>
+            <th>Placar</th>
+            <th>Fora</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var p in Model)
+        {
+            <tr>
+                <td>@p.RoundNumber</td>
+                <td>@p.DataPartida.ToShortDateString()</td>
+                <td>@p.TimeCasa.Nome</td>
+                <td>
+                    @(p.Jogado
+                      ? $"{p.GolsTimeCasa} x {p.GolsTimeFora}"
+                      : "— x —")
+                </td>
+                <td>@p.TimeFora.Nome</td>
+                <td>
+                    @Html.ActionLink(
+                        "Detalhes",
+                        "Details",
+                        new { id = p.PartidaId },
+                        new { @class = "btn btn-secondary btn-sm" }
+                    )
+                    @if (!p.Jogado)
+                    {
+                        @: &nbsp;-&nbsp;
+                        @Html.ActionLink(
+                            "Registrar Resultado",
+                            "RegistrarResultado",
+                            new { id = p.PartidaId },
+                            new { @class = "btn btn-primary btn-sm" }
+                        )
+                    }
+                </td>
+
+
+            </tr>
+        }
+    </tbody>
+</table>

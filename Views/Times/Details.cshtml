@@ -1,0 +1,89 @@
+﻿@model SoccerLeague.Models.Time
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Detalhes do Time";
+}
+
+<h2 style="margin-bottom: 15px">Detalhes do Time</h2>
+
+<div class="details-container">
+    <h3>@Model.Nome</h3>
+    <table class="table table-striped">
+        <tr>
+            <th>Cidade</th>
+            <td>@Model.Cidade</td>
+        </tr>
+        <tr>
+            <th>Estado</th>
+            <td>@Model.Estado</td>
+        </tr>
+        <tr>
+            <th>Ano de Fundação</th>
+            <td>@Model.AnoFundacao</td>
+        </tr>
+        <tr>
+            <th>Estádio</th>
+            <td>@Model.Estadio</td>
+        </tr>
+        <tr>
+            <th>Capacidade do Estádio</th>
+            <td>@Model.CapacidadeEstadio</td>
+        </tr>
+        <tr>
+            <th>Uniforme Primário</th>
+            <td>@Model.CorUniformePrimaria</td>
+        </tr>
+        <tr>
+            <th>Uniforme Secundário</th>
+            <td>@Model.CorUniformeSecundaria</td>
+        </tr>
+        <tr>
+            <th>Status</th>
+            <td class="d-flex">
+                @if (Model.Status)
+                {
+                    <span class="status-icon status-green" title="Time ativo"></span> <p>Ativo</p>
+                    }
+                else
+                {
+                    <span class="status-icon status-red" title="Time inativo"></span> <p>Inativo</p>
+                    }
+            </td>
+        </tr>
+    </table>
+
+    <div style="display: flex; justify-content: space-between; margin: 2rem">
+        <div>
+            @if (Model.Jogadores != null && Model.Jogadores.Any())
+            {
+                <h4 style="margin-bottom: 15px">Jogadores</h4>
+                <ul style="margin-left: 25px">
+                    @foreach (var jogador in Model.Jogadores)
+                    {
+                        <li>@jogador.Nome</li>
+                    }
+                </ul>
+            }
+        </div>
+
+        <div>
+            @if (Model.ComissaoTecnica != null && Model.ComissaoTecnica.Any())
+            {
+                <h4 style="margin-bottom: 15px; margin-top: 20px">Comissão Técnica</h4>
+                <ul style="margin-left: 25px">
+                    @foreach (var membro in Model.ComissaoTecnica)
+                    {
+                        <li>@membro.Nome - @membro.Cargo.ToString()</li>
+                    }
+                </ul>
+            }
+        </div>
+    </div>
+    
+</div>
+
+<div class="actions" style="margin-top: 15px">
+    @Html.ActionLink("Editar", "Edit", new { id = Model.TimeId }, new { @class = "btn btn-primary" })
+    @Html.ActionLink("Voltar à Lista", "Index", null, new { @class = "btn btn-default" })
+</div>

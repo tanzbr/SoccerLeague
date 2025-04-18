@@ -1,0 +1,57 @@
+@model SoccerLeague.Models.Jogador
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Detalhes do Jogador";
+}
+
+<h2>Detalhes do Jogador</h2>
+
+<div class="details-container">
+    <table class="table table-bordered table-striped">
+        <tr>
+            <th>Nome</th>
+            <td>@Model.Nome</td>
+        </tr>
+        <tr>
+            <th>Data de Nascimento</th>
+            <td>@Model.DataNascimento.ToShortDateString()</td>
+        </tr>
+        <tr>
+            <th>Nacionalidade</th>
+            <td>@Model.Nacionalidade</td>
+        </tr>
+        <tr>
+            <th>Posição</th>
+            <td>@Model.Posicao</td>
+        </tr>
+        <tr>
+            <th>Número da Camisa</th>
+            <td>@Model.NumeroCamisa</td>
+        </tr>
+        <tr>
+            <th>Altura</th>
+            <td>@Model.Altura</td>
+        </tr>
+        <tr>
+            <th>Peso</th>
+            <td>@Model.Peso</td>
+        </tr>
+        <tr>
+            <th>Pé Preferido</th>
+            <td>@Model.PePreferido</td>
+        </tr>
+        <tr>
+            <th>Time</th>
+            <td>
+                @(Model.Time != null ? Model.Time.Nome : "Não vinculado")
+            </td>
+        </tr>
+    </table>
+</div>
+
+<p>
+    @Html.ActionLink("Editar", "Edit", new { id = Model.JogadorId }, new { @class = "btn btn-warning" })
+    @Html.ActionLink("Excluir", "Delete", new { id = Model.JogadorId }, new { @class = "btn btn-danger" })
+    @Html.ActionLink("Voltar à Lista", "Index", null, new { @class = "btn btn-default" })
+</p>

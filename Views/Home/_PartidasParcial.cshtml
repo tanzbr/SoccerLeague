@@ -1,0 +1,46 @@
+﻿@model IEnumerable<SoccerLeague.Models.Partida>
+
+<table class="table table-sm table-striped">
+    <thead>
+        <tr>
+            <th>Data</th>
+            <th>Casa</th>
+            <th>Placar</th>
+            <th>Fora</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.Any())
+        {
+            foreach (var partida in Model)
+            {
+                <tr>
+                    <td>@partida.DataPartida.ToString("dd/MM")</td>
+                    <td>@partida.TimeCasa.Nome</td>
+                    <td>
+                        @(partida.Jogado
+                            ? $"{partida.GolsTimeCasa} x {partida.GolsTimeFora}"
+                            : "– x –")
+                    </td>
+                    <td>@partida.TimeFora.Nome</td>
+                    <td>
+                        <a href="@Url.Action("Details", "Partidas", new { id = partida.PartidaId })"
+                           class="btn btn-sm btn-info"
+                           style="font-size: 0.8rem;">
+                            Ver
+                        </a>
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="5" class="text-center text-muted">
+                    Nenhuma partida nesta rodada.
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,33 +1,153 @@
-﻿@{
-    ViewBag.Title = "Home Page";
+﻿@model SoccerLeague.ViewModels.HomeIndexViewModel
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Página Inicial - Soccer League";
+
+    var leagueErrors = ViewBag.LeagueErrors as List<string> ?? new List<string>();
+    bool leagueReady = ViewBag.IsLeagueReady as bool? ?? false;
+    bool hasMatches = ViewBag.HasMatches as bool? ?? false;
 }
 
-<main>
-    <section class="row" aria-labelledby="aspnetTitle">
-        <h1 id="title">ASP.NET</h1>
-        <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
-        <p><a href="https://asp.net" class="btn btn-primary btn-md">Learn more &raquo;</a></p>
-    </section>
+<style>
+    .home-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        margin-bottom: 30px;
+    }
 
-    <div class="row">
-        <section class="col-md-4" aria-labelledby="gettingStartedTitle">
-            <h2 id="gettingStartedTitle">Getting started</h2>
-            <p>
-                ASP.NET MVC gives you a powerful, patterns-based way to build dynamic websites that
-                enables a clean separation of concerns and gives you full control over markup
-                for enjoyable, agile development.
-            </p>
-            <p><a class="btn btn-outline-dark" href="https://go.microsoft.com/fwlink/?LinkId=301865">Learn more &raquo;</a></p>
-        </section>
-        <section class="col-md-4" aria-labelledby="librariesTitle">
-            <h2 id="librariesTitle">Get more libraries</h2>
-            <p>NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
-            <p><a class="btn btn-outline-dark" href="https://go.microsoft.com/fwlink/?LinkId=301866">Learn more &raquo;</a></p>
-        </section>
-        <section class="col-md-4" aria-labelledby="hostingTitle">
-            <h2 id="hostingTitle">Web Hosting</h2>
-            <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
-            <p><a class="btn btn-outline-dark" href="https://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
-        </section>
+    .column-left, .column-right {
+        background: #fff;
+        border: 1px solid #dee2e6;
+        border-radius: 6px;
+        padding: 15px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        flex: 1;
+        min-width: 300px;
+    }
+
+        .column-left h2, .column-right h2 {
+            margin-top: 0;
+            font-size: 1.5rem;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 5px;
+        }
+</style>
+
+@if (hasMatches)
+{
+    <div class="league-status success">
+        <span class="status-indicator status-green"></span>
+        <strong> A liga está em andamento!</strong>
     </div>
-</main>
+}
+else
+{
+<div class="league-status @(leagueReady ? "success" : "warning")">
+    @if (leagueReady)
+    {
+        <span class="status-indicator status-green"></span>
+        <strong> A liga está apta para iniciar!</strong>
+    }
+    else
+    {
+<div style="display: flex; gap: 5px;">
+    <span class="status-indicator status-red"></span>
+    <p style="color: #dc3545; margin-bottom: 20px;">A liga <strong>não</strong> está apta para iniciar.</p>
+</div>
+
+        <ul class="error-list">
+            @foreach (var err in leagueErrors)
+            {
+                <li>@err</li>
+            }
+        </ul>
+
+    }
+</div>
+
+
+}
+
+<div class="btn-group" style="margin-bottom:15px;">
+    @if (leagueReady && !hasMatches)
+    {
+        <form action='@Url.Action("SortearPartidas", "Tabelas")' method="post" style="display:inline;">
+            @Html.AntiForgeryToken()
+            <button type="submit" class="btn btn-primary">Iniciar liga</button>
+        </form>
+    }
+
+    @if (hasMatches)
+    {
+        <form action='@Url.Action("ResetarTabela", "Tabelas")' method="post" style="display:inline; margin-left:5px;">
+            @Html.AntiForgeryToken()
+            <button type="submit" class="btn btn-danger">Resetar Tabela</button>
+        </form>
+    }
+    
+</div>
+
+@if (ViewBag.SortearError != null)
+{
+    <div class="alert alert-danger">
+        @ViewBag.SortearError
+    </div>
+}
+@if (ViewBag.SortearSuccess != null)
+{
+    <div class="alert alert-success">
+        @ViewBag.SortearSuccess
+    </div>
+}
+@if (ViewBag.ResetError != null)
+{
+    <div class="alert alert-danger">
+        @ViewBag.ResetError
+    </div>
+}
+@if (ViewBag.ResetSuccess != null)
+{
+    <div class="alert alert-success">
+        @ViewBag.ResetSuccess
+    </div>
+}
+
+<div class="home-container">
+    <!-- Coluna esquerda: Classificação -->
+    <div class="column-left">
+        <h2>Classificação</h2>
+        @Html.Partial("_TabelaParcial", Model.Tabela)
+    </div>
+
+    <!-- Coluna direita: Partidas por rodada -->
+    <div class="column-right">
+        <h2>Rodada @Model.CurrentRound</h2>
+
+        <div class="round-controls mb-2" style="text-align:center;">
+            @if (Model.PrevRound >= 1)
+            {
+                @Html.ActionLink(
+                    "← Rodada " + Model.PrevRound,
+                    "Index",
+                    "Home",
+                    new { round = Model.PrevRound },
+                    new { @class = "btn btn-outline-primary" }
+                )
+            }
+            @if (Model.NextRound <= Model.MaxRound)
+            {
+                @Html.ActionLink(
+                    "Rodada " + Model.NextRound + " →",
+                    "Index",
+                    "Home",
+                    new { round = Model.NextRound },
+                    new { @class = "btn btn-outline-primary" }
+                )
+            }
+        </div>
+
+        @Html.Partial("_PartidasParcial", Model.Partidas)
+    </div>
+</div>

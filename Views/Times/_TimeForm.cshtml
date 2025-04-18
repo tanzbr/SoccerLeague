@@ -1,0 +1,56 @@
+﻿@model SoccerLeague.Models.Time
+
+<div class="form-group">
+    @Html.LabelFor(m => m.Nome)
+    @Html.TextBoxFor(m => m.Nome, new { @class = "form-control" })
+    @Html.ValidationMessageFor(m => m.Nome)
+</div>
+
+<div class="form-group">
+    @Html.LabelFor(m => m.Cidade)
+    @Html.TextBoxFor(m => m.Cidade, new { @class = "form-control" })
+    @Html.ValidationMessageFor(m => m.Cidade)
+</div>
+
+<div class="form-group">
+    @Html.LabelFor(m => m.Estado)
+    @Html.TextBoxFor(m => m.Estado, new { @class = "form-control", placeholder = "Ex: SP, RJ" })
+    @Html.ValidationMessageFor(m => m.Estado)
+</div>
+
+<div class="form-group">
+    @Html.LabelFor(m => m.AnoFundacao)
+    @Html.TextBoxFor(m => m.AnoFundacao, new { @class = "form-control", type = "number" })
+    @Html.ValidationMessageFor(m => m.AnoFundacao)
+</div>
+
+<div class="form-group">
+    @Html.LabelFor(m => m.Estadio)
+    @Html.TextBoxFor(m => m.Estadio, new { @class = "form-control" })
+    @Html.ValidationMessageFor(m => m.Estadio)
+</div>
+
+<div class="form-group">
+    @Html.LabelFor(m => m.CapacidadeEstadio)
+    @Html.TextBoxFor(m => m.CapacidadeEstadio, new { @class = "form-control", type = "number" })
+    @Html.ValidationMessageFor(m => m.CapacidadeEstadio)
+</div>
+
+<div class="form-group">
+    @Html.LabelFor(m => m.CorUniformePrimaria)
+    @Html.TextBoxFor(m => m.CorUniformePrimaria, new { @class = "form-control" })
+    @Html.ValidationMessageFor(m => m.CorUniformePrimaria)
+</div>
+
+<div class="form-group">
+    @Html.LabelFor(m => m.CorUniformeSecundaria)
+    @Html.TextBoxFor(m => m.CorUniformeSecundaria, new { @class = "form-control" })
+    @Html.ValidationMessageFor(m => m.CorUniformeSecundaria)
+</div>
+
+<div class="form-group">
+    @Html.LabelFor(m => m.Status)
+    @Html.CheckBoxFor(m => m.Status)
+    @Html.ValidationMessageFor(m => m.Status)
+    <small class="form-text text-muted">Marque se o time estiver ativo/participando.</small>
+</div>

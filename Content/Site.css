@@ -1,20 +1,390 @@
-﻿/* Set padding to keep content from hitting the edges */
-.body-content {
+﻿* {
+    margin: 0;
+    padding: 0;
+}
+
+article, aside, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section {
+    display: block;
+}
+
+body {
+    line-height: 1;
+    font-family: Arial, sans-serif;
+    background-color: #f2f2f2;
+    color: #333;
+}
+
+.page-title {
+    font-size: 1.6em;
+    font-weight: bold;
+}
+
+/* ------------------------------
+   LINKs
+------------------------------- */
+a {
+    text-decoration: none;
+    color: #0066cc;
+}
+
+    a:hover {
+        text-decoration: underline;
+    }
+
+.btn-link {
+    text-decoration: none;
+    color: #0066cc;
+}
+
+    .btn-link:hover {
+        text-decoration: underline;
+    }
+
+/* ------------------------------
+   HEADER / NAV
+------------------------------- */
+.header {
+    background-color: #008080; /* tom de teal */
+    color: #fff;
+    padding: 20px;
+}
+
+.banner h1 {
+    font-size: 2em;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.navbar {
+    margin-top: 10px;
+}
+
+.nav-menu {
+    list-style: none;
+    display: flex;
+    gap: 15px; /* espaçamento entre os itens */
+}
+
+    .nav-menu li {
+        display: inline-block;
+    }
+
+        .nav-menu li a {
+            color: #fff;
+            padding: 8px;
+            transition: background-color 0.2s;
+        }
+
+            .nav-menu li a:hover {
+                background-color: #006666;
+                border-radius: 4px;
+            }
+
+/* ------------------------------
+   MAIN
+------------------------------- */
+.main-container {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 15px;
+    background-color: #fff;
+    border-radius: 4px;
+    box-shadow: 0 0 5px rgba(0,0,0,0.1);
+}
+
+/* ------------------------------
+   FOOTER
+------------------------------- */
+.footer {
+    background-color: #ccc;
+    text-align: center;
+    padding: 10px;
+    margin-top: 20px;
+}
+
+    .footer p {
+        margin: 0;
+        color: #555;
+    }
+
+/* ------------------------------
+   TABLES
+------------------------------- */
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+}
+
+    .table th, .table td {
+        border: 1px solid #ddd;
+        padding: 8px;
+    }
+
+    .table th {
+        background-color: #f4f4f4;
+        text-align: left;
+    }
+
+    .table tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+
+/* ------------------------------
+   BUTTONS / FORMS
+------------------------------- */
+button, input[type="submit"], input[type="button"] {
+    background-color: #008080;
+    color: #fff;
+    padding: 6px 12px;
+    margin: 5px 0;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+    button:hover, input[type="submit"]:hover, input[type="button"]:hover {
+        background-color: #006666;
+    }
+
+label {
+    display: inline-block;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+input[type="text"], input[type="number"], input[type="date"], select {
+    width: 100%;
+    padding: 6px;
+    margin-top: 4px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+/* ------------------------------
+   MISC
+------------------------------- */
+/* Tooltip para exibir pendências de um time inativo */
+.status-icon {
+    width: 16px;
+    height: 16px;
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 4px;
+}
+
+.status-green {
+    background-color: #00cc00;
+    border-radius: 50%;
+}
+
+.status-red {
+    background-color: #cc0000;
+    border-radius: 50%;
+}
+
+.has-tooltip {
+    position: relative;
+    cursor: help;
+}
+
+    .has-tooltip:hover .tooltip-content {
+        visibility: visible;
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+.tooltip-content {
+    visibility: hidden;
+    opacity: 0;
+    position: absolute;
+    left: 20px;
+    top: 0;
+    background: #333;
+    color: #fff;
+    padding: 6px 10px;
+    border-radius: 4px;
+    transform: translateY(-10px);
+    transition: visibility 0s, opacity 0.2s, transform 0.2s;
+    white-space: nowrap;
+    z-index: 100;
+}
+
+    .tooltip-content::after {
+        content: "";
+        position: absolute;
+        left: -6px;
+        top: 50%;
+        transform: translateY(-50%);
+        border: 6px solid transparent;
+        border-right-color: #333;
+    }
+
+.home-container {
+    margin: 10px 0;
+}
+
+.d-flex {
+    display: flex;
+}
+
+
+.row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px; 
+}
+
+.column-left,
+.column-right {
+    flex: 1;
+    min-width: 300px;
+}
+    .column-left h2, .column-right h2 {
+        margin-bottom: 15px;
+    }
+
+
+.pagination-controls {
     margin-top: 15px;
-    padding-left: 15px;
-    padding-right: 15px;
+}
+    .pagination-controls a {
+        color: #008080;
+        font-weight: bold;
+        margin: 0 5px;
+    }
+
+        .pagination-controls a:hover {
+            text-decoration: underline;
+        }
+
+
+.status-icon {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
 }
 
-/* Override the default bootstrap behavior where horizontal description lists 
-   will truncate terms that are too long to fit in the left column 
-*/
-.dl-horizontal dt {
-    white-space: normal;
+
+.status-green {
+    background-color: #00cc00;
 }
 
-/* Set width on the form input elements since they're 100% wide by default */
-input,
-select,
-textarea {
-    max-width: 280px;
+
+.status-red {
+    background-color: #cc0000;
+}
+
+
+.status-icon[title]:hover::after {
+    content: attr(title);
+    position: absolute;
+    background: #333;
+    color: #fff;
+    padding: 5px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+    margin-left: 20px;
+    z-index: 100;
+}
+
+
+/* Container geral da tabela */
+.table-container {
+  margin-top: 20px;
+  padding: 15px;
+  background: #ffffff;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+/* Estilização da tabela de classificação */
+.custom-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.custom-table th {
+  background-color: #f1f3f5;
+  color: #495057;
+  padding: 10px;
+  border-bottom: 2px solid #dee2e6;
+  text-align: center;
+}
+
+.custom-table td {
+  padding: 10px;
+  border-bottom: 1px solid #dee2e6;
+  text-align: center;
+}
+
+/* Indicador de status */
+.status-indicator {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  margin-right: 8px;
+  vertical-align: middle;
+}
+.status-green { background-color: #28a745; }
+.status-red   { background-color: #dc3545; }
+
+/* Box de status da liga */
+.league-status {
+  padding: 15px;
+  border-radius: 6px;
+  margin-bottom: 20px;
+}
+.league-status.success {
+  background-color: #e9f7ef;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+.league-status.warning {
+  background-color: #fff3cd;
+  color: #856404;
+  border: 1px solid #ffeeba;
+}
+
+/* Lista de erros */
+.error-list {
+  margin: 0;
+  padding-left: 20px;
+}
+.error-list li {
+  margin-bottom: 5px;
+}
+
+
+.row-goals {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 30px;
+}
+
+.goal-column {
+    flex: 0 0 48%;
+}
+
+.goal-card {
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    display: flex;
+    flex-direction: column;
+}
+
+    .goal-card h4 {
+        margin-bottom: 15px;
+    }
+
+.input-group {
+    margin-bottom: 15px;
 }

@@ -1,0 +1,23 @@
+﻿@model SoccerLeague.Models.Time
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Editar Time";
+}
+
+<h2>Editar Time</h2>
+
+@using (Html.BeginForm("Edit", "Times", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.TimeId)
+
+    @Html.Partial("_TimeForm", Model)
+
+    <button type="submit" class="btn btn-primary">Salvar</button>
+    @Html.ActionLink("Voltar", "Index", null, new { @class = "btn btn-default" })
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

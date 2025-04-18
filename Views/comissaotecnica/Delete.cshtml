@@ -1,0 +1,42 @@
+@model SoccerLeague.Models.ComissaoTecnica
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Excluir Membro da Comissão Técnica";
+}
+
+<h2>Excluir Membro da Comissão Técnica</h2>
+
+<h3>Você tem certeza que deseja excluir este membro?</h3>
+
+<div class="details-container">
+    <table class="table table-bordered table-striped">
+        <tr>
+            <th>Nome</th>
+            <td>@Model.Nome</td>
+        </tr>
+        <tr>
+            <th>Data de Nascimento</th>
+            <td>@Model.DataNascimento.ToShortDateString()</td>
+        </tr>
+        <tr>
+            <th>Cargo</th>
+            <td>@Model.Cargo</td>
+        </tr>
+        <tr>
+            <th>Time</th>
+            <td>@(Model.Time != null ? Model.Time.Nome : "Não vinculado")</td>
+        </tr>
+    </table>
+</div>
+
+@using (Html.BeginForm("Delete", "ComissaoTecnica", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.ComissaoTecnicaId)
+
+    <div class="form-group" style="margin-top:15px;">
+        <input type="submit" value="Excluir" class="btn btn-danger" />
+        @Html.ActionLink("Cancelar", "Index", null, new { @class = "btn btn-default" })
+    </div>
+}
